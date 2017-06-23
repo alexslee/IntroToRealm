@@ -7,6 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Room.h"
+#import "Furniture.h"
 
 @class DetailViewController;
 

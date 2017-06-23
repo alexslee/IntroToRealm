@@ -37,12 +37,41 @@
 
 
 - (void)insertNewObject:(id)sender {
-    if (!self.objects) {
-        self.objects = [[NSMutableArray alloc] init];
-    }
-    [self.objects insertObject:[NSDate date] atIndex:0];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//    if (!self.objects) {
+//        self.objects = [[NSMutableArray alloc] init];
+//    }
+//    [self.objects insertObject:[NSDate date] atIndex:0];
+//    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+//    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Add New Room" message:@"Give your room a name:" preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.placeholder = @"Room name";
+    }];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * action) {
+    }];
+    
+    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"Add Room" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        NSString *input = alertController.textFields[0].text;
+        Room *newRoom = [[Room alloc] init];
+        newRoom.name = input;
+        
+        //save to the view controller as well as to Realm
+        
+        RLMRealm *realm = [RLMRealm defaultRealm];
+        [realm beginWriteTransaction];
+        [realm addObject:newRoom];
+        [realm commitWriteTransaction];
+        [self.objects addObject:newRoom.name];
+        
+        [self.tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:([Room allObjects].count - 1) inSection:0]] withRowAnimation:UITableViewRowAnimationAutomatic];
+        
+    }];
+    
+    [alertController addAction:cancel];
+    [alertController addAction:ok];
+    [self.tableView reloadData];
+    [self presentViewController:alertController animated: YES completion: nil];
+
 }
 
 
@@ -51,7 +80,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSDate *object = self.objects[indexPath.row];
+        Room *object = self.objects[indexPath.row];
         DetailViewController *controller = (DetailViewController *)[segue destinationViewController];
         [controller setDetailItem:object];
     }
@@ -66,15 +95,15 @@
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.objects.count;
+    return [[Room allObjects] count];
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-
-    NSDate *object = self.objects[indexPath.row];
-    cell.textLabel.text = [object description];
+    RLMResults *results = [Room allObjects];
+    Room *room = results[indexPath.row];
+    cell.textLabel.text = room.name;
     return cell;
 }
 

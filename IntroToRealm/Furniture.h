@@ -6,7 +6,7 @@
 //  Copyright © 2017 Alex Lee. All rights reserved.
 //
 
-#import "RLMObject.h"
+#import <Realm/Realm.h>
 
 @interface Furniture : RLMObject
 

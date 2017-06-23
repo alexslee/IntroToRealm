@@ -7,10 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Room.h"
+#import "Furniture.h"
 @interface DetailViewController : UIViewController
 
-@property (strong, nonatomic) id detailItem;
+@property (strong, nonatomic) Room *detailItem;
+@property (strong, nonatomic) RLMResults<Furniture *> *furnitureResults;
 //@property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;
 
 @end
