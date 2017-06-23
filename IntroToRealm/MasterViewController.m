@@ -80,7 +80,8 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        Room *object = self.objects[indexPath.row];
+        RLMResults *results = [Room allObjects];
+        Room *object = [results objectAtIndex:indexPath.row];
         DetailViewController *controller = (DetailViewController *)[segue destinationViewController];
         [controller setDetailItem:object];
     }
@@ -102,7 +103,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     RLMResults *results = [Room allObjects];
-    Room *room = results[indexPath.row];
+    Room *room = [results objectAtIndex:indexPath.row];
     cell.textLabel.text = room.name;
     return cell;
 }

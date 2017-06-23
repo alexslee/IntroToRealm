@@ -7,7 +7,14 @@
 //
 
 #import <Realm/Realm.h>
+@class Room;
 
 @interface Furniture : RLMObject
 
+@property Room *room;
+
+@property NSString *name;
+
 @end
+
+RLM_ARRAY_TYPE(Furniture)
